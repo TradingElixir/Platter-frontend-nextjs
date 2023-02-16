@@ -13,7 +13,7 @@ export default function Card(props) {
           }
           {
             <span className={styles.tokenName}>
-              {props.token.walletBalance.name}
+              {`${props.token.walletBalance.name} (${props.token.walletBalance.chain})`}
             </span>
           }
         </section>

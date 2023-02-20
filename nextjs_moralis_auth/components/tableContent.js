@@ -2,7 +2,7 @@ import styles from "../styles/Home.module.css";
 
 import GetWalletTokens from "./getWalletTokens";
 
-export default function TableContent() {
+export default function TableContent({ tokens, setTokens }) {
   return (
     <section className={styles.tableContent}>
       <section className={styles.tableTitle}>
@@ -12,7 +12,7 @@ export default function TableContent() {
         <section>Balance</section>
       </section>
       <section className={styles.tableAssets_container}>
-        <GetWalletTokens />
+        <GetWalletTokens tokens={tokens} setTokens={setTokens} />
       </section>
     </section>
   );

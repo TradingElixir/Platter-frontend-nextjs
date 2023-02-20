@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import Card from "./card.js";
 
-export default function GetWalletTokens() {
-  const [tokens, setTokens] = useState([]);
+export default function GetWalletTokens({ tokens, setTokens }) {
   const { address } = useAccount();
 
   useEffect(() => {
@@ -24,17 +23,18 @@ export default function GetWalletTokens() {
 
   return (
     <section>
-      {tokens.map((token) => {
-        return (
-          token.usdPrice && (
-            <Card
-              token={token}
-              total={tokens[3]}
-              key={token.walletBalance?.symbol}
-            />
-          )
-        );
-      })}
+      {Array.isArray(tokens) &&
+        tokens.map((token) => {
+          return (
+            token.usdPrice && (
+              <Card
+                token={token}
+                total={tokens[3]}
+                key={token.walletBalance?.symbol}
+              />
+            )
+          );
+        })}
     </section>
   );
 }

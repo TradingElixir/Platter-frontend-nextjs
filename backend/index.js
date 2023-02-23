@@ -85,6 +85,119 @@ app.get("/gettokens", async (req, res) => {
   }
 });
 
+const rateLimit = require("express-rate-limit");
+const NodeCache = require("node-cache");
+const cacheT = new NodeCache({ stdTTL: 300, checkperiod: 60 });
+
+
+//GET Users NFT's
+app.get("/nftBalance", async (req, res) => {
+  if (!Moralis.Core.isStarted) {
+    await Moralis.start({ apiKey: process.env.MORALIS_API_KEY });
+  }
+
+  try {
+    const { address, chain } = req.query;
+
+    let userNFTs = [];
+
+    // If no chain is specified, get NFTs from all supported chains
+    if (!chain) {
+      const supportedChains = Moralis.Web3.getAllSupportedChains();
+      for (let i = 0; i < supportedChains.length; i++) {
+        const response = await Moralis.EvmApi.nft.getWalletNFTs({
+          address: address,
+          chain: supportedChains[i],
+        });
+        userNFTs = userNFTs.concat(response.raw);
+      }
+    } else {
+      const response = await Moralis.EvmApi.nft.getWalletNFTs({
+        address: address,
+        chain: chain,
+      });
+      userNFTs = response.raw;
+    }
+
+    res.send(userNFTs);
+  } catch (e) {
+    res.send(e.message);
+  }
+});
+
+
+
+const tokenTransfersLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minutes
+  max: 30, // limit each IP to 100 requests per windowMs
+  message: "Too many requests, please try again later"
+});
+
+//GET USERS TOKEN TRANSFERS
+const cache = new Map();
+
+app.get("/tokenTransfers", tokenTransfersLimiter, async (req, res) => {
+  if (!Moralis.Core.isStarted) {
+    await Moralis.start({ apiKey: process.env.MORALIS_API_KEY });
+  }
+
+  try {
+    const { address } = req.query;
+    const chains = ["0x1", "0x89", "0xfa", "0x38"];
+    const tokenTransfers = [];
+
+    for (const chain of chains) {
+      const response = await Moralis.EvmApi.token.getWalletTokenTransfers({
+        address: address,
+        chain: chain,
+      });
+
+      const userTrans = response.raw.result;
+      console.log({ trans: userTrans });
+
+      const cachedTransfers = cache.get(`${address}-${chain}`) || [];
+      const newTransfers = [];
+
+      for (const transfer of userTrans) {
+        const cachedTransfer = cachedTransfers.find((t) => t.txHash === transfer.txHash);
+        if (cachedTransfer) {
+          console.log(`Found cached transfer ${transfer.txHash}`);
+          newTransfers.push(cachedTransfer);
+        } else {
+          try {
+            const metaResponse = await Moralis.EvmApi.token.getTokenMetadata({
+              addresses: [transfer.address],
+              chain: chain,
+            });
+            if (metaResponse.raw) {
+              transfer.decimals = metaResponse.raw[0].decimals;
+              transfer.symbol = metaResponse.raw[0].symbol;
+              newTransfers.push(transfer);
+              console.log(`Added new transfer ${transfer.txHash}`);
+            } else {
+              console.log(`No details for desired coin ${transfer.address}`);
+            }
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      }
+
+      const allTransfers = [...cachedTransfers, ...newTransfers];
+      cache.set(`${address}-${chain}`, allTransfers);
+
+      tokenTransfers.push({
+        userTransDetails: allTransfers,
+        chain
+      });
+    }
+
+    res.send({ tokenTransfers });
+  } catch (e) {
+    console.log(e.message);
+    res.send(e.message);
+  }
+});
 
 
 Moralis.start({

@@ -1,6 +1,13 @@
 import styles from "../styles/Home.module.css";
+import React, { useState } from 'react';
+import Tokens from './getWalletTokens';
+import NFTs from './NFTs';
+import Transactions from './Transactions';
 
-export default function TableHeader() {
+  
+
+export default function TableHeader({activeTab,setActiveTab}) {
+  // const [selectedOption, setSelectedOption] = useState('Tokens');
   return (
     <section className={styles.tableHeader}>
       <section className={styles.assets}>
@@ -34,11 +41,17 @@ export default function TableHeader() {
             />
           </svg>
         </p>
-        <section className={styles.displayAssetsOption}>
-          <p className={styles.tokens}>Tokens</p>
-          <p>NFTs</p>
-          <p>Transactions</p>
-        </section>
+        <div>
+      <section className={styles.displayAssetsOption}>
+        <p className={activeTab==="tokens"?styles.tokens:null} onClick={() => setActiveTab('tokens')}>
+          Tokens
+        </p>
+        <p className={activeTab==="nfts"?styles.tokens:null} onClick={() => setActiveTab('nfts')}>NFTs</p>
+        <p className={activeTab==="transactions"?styles.tokens:null} onClick={() => setActiveTab('transactions')}>Transactions</p>
+      </section>
+
+      
+    </div>
       </section>
     </section>
   );

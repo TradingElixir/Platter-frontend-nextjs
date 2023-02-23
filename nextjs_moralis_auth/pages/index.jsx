@@ -47,7 +47,7 @@ function HomePage() {
     <section className={styles.main}>
       <section className={styles.header}>
         <section className={styles.header_section}>
-          <h1>MetaMask Portfolio dApp with Moralis</h1>
+          <h1>Alpha Platter</h1>
           <button className={styles.connect_btn} onClick={handleAuth}>
             Connect Metamask
           </button>

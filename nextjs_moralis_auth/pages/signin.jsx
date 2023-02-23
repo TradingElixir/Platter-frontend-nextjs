@@ -46,7 +46,7 @@ function SignIn() {
   return (
     <section className={styles.header}>
       <section className={styles.header_section}>
-        <h1>Connect Wallet and Chat with CHAT GPT</h1>
+        <h1>Connect Wallet</h1>
         <button className={styles.connect_btn} onClick={handleAuth}>
           Authenticate via Metamask
         </button>

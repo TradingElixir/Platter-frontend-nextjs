@@ -1,6 +1,9 @@
 import styles from "../styles/Home.module.css";
 
 import GetWalletTokens from "./getWalletTokens";
+import Nfts from "./NFTs";
+import TransferHistory from "./Transactions";
+
 
 export default function TableContent({ activeTab,tokens ,setTokens }) {
   return (
@@ -8,8 +11,8 @@ export default function TableContent({ activeTab,tokens ,setTokens }) {
       
       <section className={styles.tableAssets_container}>
        { activeTab==="tokens" && <GetWalletTokens tokens={tokens}  setTokens={setTokens}/> }
-       {activeTab==="nfts" && <div> NFTS</div>}
-       {activeTab==="transactions" && <div> Transactions</div>}
+       
+       {activeTab==="transactions" && <TransferHistory/>}
       </section> 
     </section>
   );

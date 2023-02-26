@@ -30,13 +30,11 @@ export function TransferHistory() {
 
   return (
     <>
-      <div className="tabHeading">
-        Transfer History <Reload onClick={getTokenTransfers} />
-      </div>
+      
       <div>
         {tokenTransfers && tokenTransfers.length > 0 && (
           <Table
-            pageSize={10}
+            pageSize={8}
             
             noPagination={false}
             style={{ width: "81vw" }}

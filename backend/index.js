@@ -97,33 +97,21 @@ app.get("/nftBalance", async (req, res) => {
   }
 
   try {
-    const { address, chain } = req.query;
+    const { query } = req;
 
-    let userNFTs = [];
+    const response = await Moralis.EvmApi.nft.getWalletNFTs({
+      address: query.address,
+      chain: query.chain,
+    });
 
-    // If no chain is specified, get NFTs from all supported chains
-    if (!chain) {
-      const supportedChains = Moralis.Web3.getAllSupportedChains();
-      for (let i = 0; i < supportedChains.length; i++) {
-        const response = await Moralis.EvmApi.nft.getWalletNFTs({
-          address: address,
-          chain: supportedChains[i],
-        });
-        userNFTs = userNFTs.concat(response.raw);
-      }
-    } else {
-      const response = await Moralis.EvmApi.nft.getWalletNFTs({
-        address: address,
-        chain: chain,
-      });
-      userNFTs = response.raw;
-    }
+    const userNFTs = response.raw;
 
     res.send(userNFTs);
   } catch (e) {
     res.send(e.message);
   }
 });
+
 
 
 

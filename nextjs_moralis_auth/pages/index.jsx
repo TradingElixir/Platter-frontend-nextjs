@@ -1,9 +1,12 @@
+import Image from "next/image";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { signIn } from "next-auth/react";
 import { useAccount, useConnect, useSignMessage, useDisconnect } from "wagmi";
 import { useRouter } from "next/router";
 import { useAuthRequestChallengeEvm } from "@moralisweb3/next";
 import styles from "../styles/Home.module.css";
+import bgImage from "../public/bg-image.jpg";
+import logo from "../public/logo.svg";
 
 function HomePage() {
   const { connectAsync } = useConnect();
@@ -45,10 +48,16 @@ function HomePage() {
 
   return (
     <section className={styles.main}>
+      <section className={styles.bg_image}>
+        <Image src={bgImage} layout="fill" objectFit="cover" />
+      </section>
       <section className={styles.header}>
         <section className={styles.header_section}>
-          <h1>Alpha Platter</h1>
-          <button className={styles.connect_btn} onClick={handleAuth}>
+          
+            <Image src={logo} alt="Alpha Platter logo" className={styles.logo} />
+          
+          
+          <button className={styles.connect_btn1} onClick={handleAuth}>
             Connect Metamask
           </button>
         </section>
@@ -56,5 +65,6 @@ function HomePage() {
     </section>
   );
 }
+
 
 export default HomePage;

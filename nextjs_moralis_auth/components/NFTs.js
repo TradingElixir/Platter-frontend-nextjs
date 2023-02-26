@@ -1,19 +1,22 @@
-import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useAccount } from "wagmi";
+import { useEffect } from "react";
+import { Reload } from "@web3uikit/icons";
+import { Input } from "@web3uikit/core"
+import _ from 'lodash';
+import React, { useState } from 'react';
 
 
-export default function Nfts({ chain }) {
-  const [nfts, setNfts] = useState([]);
-  const [filteredNfts, setFilteredNfts] = useState([]);
+
+function Nfts({ chain, wallet,  nfts, setNfts }) {
   const [nameFilter, setNameFilter] = useState("");
   const [idFilter, setIdFilter] = useState("");
-  const { address } = useAccount();
+  const [filteredNfts, setFilteredNfts] = useState([]);
+
 
   async function getUserNfts() {
     const response = await axios.get("http://localhost:5001/nftBalance", {
       params: {
-        address: address,
+        address: wallet,
         chain: chain,
       },
     });
@@ -22,55 +25,36 @@ export default function Nfts({ chain }) {
       nftProcessing(response.data.result);
     }
   }
-
   async function nftProcessing(t) {
     try {
-      const processedNfts = await Promise.all(
-        t.map(async (nft) => {
-          let meta = JSON.parse(nft.metadata);
-          if (meta && meta.image) {
-            let imageUrl = meta.image;
-            if (
-              imageUrl.startsWith("ipfs://") ||
-              imageUrl.startsWith("https://gateway.pinata.cloud")
-            ) {
-              imageUrl =
-                "https://ipfs.moralis.io:2053/ipfs/" +
-                imageUrl
-                  .replace("ipfs://", "")
-                  .replace(
-                    "https://gateway.pinata.cloud/ipfs/",
-                    ""
-                  );
-            } else if (imageUrl.startsWith("Qm")) {
-              imageUrl =
-                "https://ipfs.moralis.io:2053/ipfs/" + imageUrl;
-            }
-            try {
-              const response = await axios.get(imageUrl);
-              if (response.status === 200) {
-                nft.image = imageUrl;
-                return nft;
-              }
-            } catch (e) {
-              console.log(e);
-            }
+      const processedNfts = await Promise.all(t.map(async (nft) => {
+        let meta = JSON.parse(nft.metadata);
+        if (meta && meta.image) {
+          let imageUrl = meta.image;
+          if (imageUrl.startsWith("ipfs://") || imageUrl.startsWith("https://gateway.pinata.cloud")) {
+            imageUrl = "https://ipfs.moralis.io:2053/ipfs/" + imageUrl.replace("ipfs://", "").replace("https://gateway.pinata.cloud/ipfs/", "");
+          } else if (imageUrl.startsWith("Qm")) {
+            imageUrl = "https://ipfs.moralis.io:2053/ipfs/" + imageUrl;
           }
-        })
-      );
-      const filteredNfts = processedNfts.filter(
-        (nft) => nft !== undefined
-      );
+          try {
+            const response = await axios.get(imageUrl);
+            if (response.status === 200) {
+              nft.image = imageUrl;
+              return nft;
+            }
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      }));
+      const filteredNfts = processedNfts.filter((nft) => nft !== undefined);
       setNfts(filteredNfts);
       setFilteredNfts(filteredNfts);
     } catch (e) {
       console.log(e);
     }
   }
-
-  useEffect(() => {
-    getUserNfts();
-  }, []);
+  
   
 
   useEffect(() => {
@@ -126,7 +110,8 @@ export default function Nfts({ chain }) {
         />
         </div>
         <div className="nftList">
-        {filteredNfts.length > 0 &&
+        {filteredNfts && filteredNfts.length > 0 &&
+
         
           filteredNfts.map((e) => {
             return (
@@ -147,3 +132,4 @@ export default function Nfts({ chain }) {
   )};
         
 
+export default Nfts;

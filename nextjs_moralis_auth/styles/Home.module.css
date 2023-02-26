@@ -1,16 +1,22 @@
 .main {
   display: flex;
+  position:relative;
   flex-direction: column;
   min-height: 100vh;
   background-color: #101213;
   margin: -8px;
 }
 
+
+
 .header {
   color: #ffffff;
   letter-spacing: 0.05rem;
+  z-index: 1;
   margin-bottom: 5rem;
 }
+
+
 
 .header_section {
   display: flex;
@@ -20,6 +26,7 @@
   margin: 0;
   padding: 0 2rem;
   font-size: 1.5rem;
+  
 }
 
 .connect_btn {
@@ -41,6 +48,31 @@
   border: none;
   cursor: pointer;
   font-size: 0.9rem;
+  z-index: 1;
+  
+}
+
+.connect_btn1 {
+  background-image: linear-gradient(to right,
+      #4febde 0%,
+      #61b7ed 51%,
+      #dc52e1 100%);
+  display: block;
+  background-size: 200% auto;
+  margin: 10px;
+  padding: 18px 45px;
+  text-align: center;
+  text-transform: uppercase;
+  transition: 0.5s;
+  color: #ffffff;
+  letter-spacing: 0.03rem;
+  border-radius: 10px;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  z-index: 1;
+  margin-right: 130px;
 }
 
 .connect_btn:hover {
@@ -48,6 +80,13 @@
   color: #ffffff;
   text-decoration: none;
 }
+
+.connect_btn1:hover {
+  background-position: right center;
+  color: #ffffff;
+  text-decoration: none;
+}
+
 
 .loggedIn_container {
   margin: 2rem auto;
@@ -70,6 +109,7 @@
   align-items: center;
   font-size: 1.3rem;
   font-weight: bold;
+  margin-left: 28px;
   letter-spacing: 0.085rem;
 }
 
@@ -113,6 +153,7 @@
   justify-content: space-evenly;
   width: 17rem;
   height: 1rem;
+  margin-left:130px;
   padding: 1rem;
   border: 1px solid #3e3f4a;
   border-radius: 2rem;
@@ -180,7 +221,7 @@
   padding: 1rem 0;
   border-bottom: 1px solid #364153;
   letter-spacing: 0.1rem;
-  marginLeft: "-20px"
+  margin-Left: "-20px"
 }
 
 .titleData {
@@ -269,4 +310,12 @@
 
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   cursor: pointer;
+}
+
+.logo {
+  width: 160px;
+  height: 630px;
+  margin-left:100px;
+  z-index: 1;
+
 }
